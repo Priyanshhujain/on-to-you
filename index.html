@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ON TO YOU — Fragrance, Anytime. Anywhere.</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Raleway:wght@300;400;500;600&family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --red: #9B0000;
+      --red-bright: #CC0000;
+      --red-glow: rgba(155, 0, 0, 0.4);
+      --black: #050505;
+      --black-2: #0e0e0e;
+      --black-3: #181818;
+      --black-4: #222222;
+      --white: #f0ece6;
+      --white-dim: rgba(240, 236, 230, 0.6);
+      --white-faint: rgba(240, 236, 230, 0.08);
+      --border: rgba(155, 0, 0, 0.25);
+      --border-bright: rgba(204, 0, 0, 0.6);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Raleway', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ─── CURSOR ─── */
+    body { cursor: none; }
+    .cursor {
+      width: 10px; height: 10px;
+      background: var(--red-bright);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s, width 0.3s, height 0.3s, background 0.3s;
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1px solid var(--red);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.15s ease, width 0.3s, height 0.3s;
+    }
+    body:hover .cursor { opacity: 1; }
+
+    /* ─── NOISE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 1; opacity: 0.5;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      padding: 22px 5%;
+      display: flex; align-items: center; justify-content: space-between;
+      background: linear-gradient(to bottom, rgba(5,5,5,0.95), transparent);
+      backdrop-filter: blur(2px);
+      border-bottom: 1px solid rgba(155, 0, 0, 0.1);
+    }
+    .nav-logo {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.15em;
+      color: var(--white);
+      text-decoration: none;
+      cursor: none;
+    }
+    .nav-logo span { color: var(--red-bright); }
+    .nav-links {
+      display: flex; gap: 40px; list-style: none;
+    }
+    .nav-links a {
+      color: var(--white-dim);
+      text-decoration: none;
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      transition: color 0.3s;
+      cursor: none;
+    }
+    .nav-links a:hover { color: var(--red-bright); }
+    .nav-links a.active { color: var(--white); }
+
+    /* hamburger */
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: none; }
+    .hamburger span { width: 24px; height: 1px; background: var(--white); transition: all 0.3s; }
+
+    /* ─── PAGES ─── */
+    .page { display: none; min-height: 100vh; padding-top: 80px; }
+    .page.active { display: block; animation: fadeIn 0.6s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ─── HOME ─── */
+    #home {
+      display: none;
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+    #home.active { display: flex; flex-direction: column; justify-content: center; }
+
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 70% at 50% 50%, rgba(100,0,0,0.25) 0%, transparent 70%),
+                  radial-gradient(ellipse 40% 40% at 80% 20%, rgba(155,0,0,0.12) 0%, transparent 60%),
+                  var(--black);
+    }
+    .hero-lines {
+      position: absolute; inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(155,0,0,0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(155,0,0,0.05) 1px, transparent 1px);
+      background-size: 80px 80px;
+      mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+    }
+
+    .hero-content {
+      position: relative; z-index: 2;
+      padding: 0 8%;
+      max-width: 900px;
+    }
+    .hero-eyebrow {
+      font-size: 0.65rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--red-bright);
+      margin-bottom: 28px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .hero-eyebrow::before {
+      content: ''; display: block; width: 40px; height: 1px; background: var(--red-bright);
+    }
+    .hero-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(3.5rem, 9vw, 8rem);
+      font-weight: 900;
+      line-height: 0.92;
+      letter-spacing: -0.02em;
+      margin-bottom: 32px;
+    }
+    .hero-title .line-red { color: var(--red-bright); display: block; }
+    .hero-title .line-white { color: var(--white); display: block; }
+    .hero-sub {
+      font-size: 0.95rem;
+      color: var(--white-dim);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 56px;
+      font-weight: 400;
+    }
+    .hero-btns { display: flex; gap: 20px; flex-wrap: wrap; }
+    .btn-primary {
+      padding: 15px 44px;
+      background: var(--red);
+      color: var(--white);
+      border: 1px solid var(--red-bright);
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: none;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: var(--red-bright);
+      transform: translateX(-100%);
+      transition: transform 0.4s;
+    }
+    .btn-primary:hover::before { transform: translateX(0); }
+    .btn-primary span { position: relative; z-index: 1; }
+    .btn-outline {
+      padding: 15px 44px;
+      background: transparent;
+      color: var(--white-dim);
+      border: 1px solid rgba(240,236,230,0.2);
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: none;
+      transition: all 0.3s;
+    }
+    .btn-outline:hover { border-color: var(--red); color: var(--white); }
+
+    /* scroll indicator */
+    .scroll-hint {
+      position: absolute; bottom: 40px; left: 8%;
+      display: flex; align-items: center; gap: 12px;
+      font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--white-dim); z-index: 2;
+    }
+    .scroll-line {
+      width: 60px; height: 1px;
+      background: linear-gradient(to right, var(--red), transparent);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+    @keyframes scrollLine {
+      0%, 100% { transform: scaleX(1); opacity: 1; }
+      50% { transform: scaleX(0.5); opacity: 0.4; }
+    }
+
+    /* floating badge */
+    .hero-badge {
+      position: absolute; right: 8%; bottom: 15%;
+      width: 120px; height: 120px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; z-index: 2;
+      animation: rotateBadge 20s linear infinite;
+    }
+    .hero-badge-inner {
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem; letter-spacing: 0.1em; color: var(--red-bright);
+      line-height: 1.8;
+    }
+    @keyframes rotateBadge {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* ─── SECTION COMMON ─── */
+    .section-pad { padding: 100px 8%; }
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      margin-bottom: 16px;
+    }
+    .section-subtitle {
+      color: var(--white-dim);
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      margin-bottom: 64px;
+      max-width: 540px;
+    }
+    .red-line {
+      width: 60px; height: 2px;
+      background: var(--red-bright);
+      margin-bottom: 24px;
+    }
+
+    /* ─── SHOP ─── */
+    .product-tabs {
+      display: flex; gap: 0; margin-bottom: 60px;
+      border-bottom: 1px solid var(--border);
+    }
+    .tab-btn {
+      padding: 14px 36px;
+      background: none; border: none; border-bottom: 2px solid transparent;
+      color: var(--white-dim);
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
+      cursor: none; transition: all 0.3s;
+      margin-bottom: -1px;
+    }
+    .tab-btn:hover { color: var(--white); }
+    .tab-btn.active { color: var(--red-bright); border-bottom-color: var(--red-bright); }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2px;
+      margin-bottom: 60px;
+    }
+    .product-card {
+      background: var(--black-2);
+      border: 1px solid var(--border);
+      padding: 0;
+      transition: all 0.4s;
+      position: relative; overflow: hidden;
+    }
+    .product-card:hover {
+      border-color: var(--red);
+      transform: translateY(-4px);
+    }
+    .product-card:hover .product-img-overlay { opacity: 1; }
+    .product-img-wrap {
+      height: 220px;
+      background: var(--black-3);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .product-placeholder {
+      font-family: 'Cinzel', serif;
+      font-size: 3.5rem;
+      color: var(--red);
+      opacity: 0.4;
+      user-select: none;
+    }
+    .product-img-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(155,0,0,0.3), transparent);
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .product-info { padding: 28px; }
+    .product-name {
+      font-family: 'Cinzel', serif;
+      font-size: 0.95rem; letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+    .product-desc {
+      font-size: 0.77rem; color: var(--white-dim);
+      line-height: 1.7; margin-bottom: 20px;
+    }
+    .product-meta {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .product-price {
+      font-family: 'Cinzel', serif;
+      font-size: 1.2rem; color: var(--red-bright);
+    }
+    .product-weight {
+      font-size: 0.68rem; letter-spacing: 0.15em;
+      color: var(--white-dim);
+    }
+
+    /* fragrance section */
+    .fragrance-section { margin-top: 60px; }
+    .fragrance-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem; letter-spacing: 0.12em;
+      margin-bottom: 40px;
+      color: var(--white);
+    }
+    .fragrance-categories { display: flex; flex-direction: column; gap: 40px; }
+    .frag-cat-label {
+      font-size: 0.65rem; letter-spacing: 0.35em; text-transform: uppercase;
+      color: var(--red-bright); margin-bottom: 16px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .frag-cat-label::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(to right, var(--border), transparent);
+    }
+    .frag-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+    .frag-tag {
+      padding: 8px 20px;
+      border: 1px solid var(--border);
+      font-size: 0.72rem; letter-spacing: 0.12em;
+      color: var(--white-dim);
+      transition: all 0.3s;
+      cursor: default;
+    }
+    .frag-tag:hover { border-color: var(--red-bright); color: var(--white); background: rgba(155,0,0,0.1); }
+
+    /* ─── STICKER GALLERY ─── */
+    .sticker-intro {
+      font-size: 1.1rem; color: var(--white-dim);
+      line-height: 1.8; max-width: 600px; margin-bottom: 60px;
+      font-style: italic;
+    }
+    .sticker-filter {
+      display: flex; gap: 12px; margin-bottom: 48px; flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 10px 28px;
+      background: none; border: 1px solid var(--border);
+      color: var(--white-dim);
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+      cursor: none; transition: all 0.3s;
+    }
+    .filter-btn:hover { border-color: var(--red); color: var(--white); }
+    .filter-btn.active { background: var(--red); border-color: var(--red); color: var(--white); }
+
+    .sticker-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 2px;
+    }
+    .sticker-card {
+      background: var(--black-2);
+      border: 1px solid var(--border);
+      aspect-ratio: 3/4;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-end;
+      padding: 24px; position: relative; overflow: hidden;
+      transition: all 0.4s; cursor: none;
+    }
+    .sticker-card:hover { border-color: var(--red-bright); transform: scale(1.02); }
+    .sticker-bg {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 5rem; opacity: 0.15;
+      user-select: none;
+    }
+    .sticker-badge {
+      font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--red-bright); margin-bottom: 8px;
+    }
+    .sticker-name {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem; text-align: center;
+    }
+    .sticker-type {
+      font-size: 0.65rem; letter-spacing: 0.15em;
+      color: var(--white-dim); margin-top: 6px;
+    }
+
+    /* ─── ABOUT ─── */
+    .about-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: start;
+    }
+    .about-visual {
+      aspect-ratio: 3/4;
+      background: var(--black-3);
+      border: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .about-visual-inner {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 30% 60%, rgba(155,0,0,0.3), transparent 60%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .about-visual-text {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(2.5rem, 5vw, 5rem);
+      color: var(--red);
+      opacity: 0.3;
+      text-align: center;
+      line-height: 1;
+    }
+    .about-corner {
+      position: absolute; top: 20px; left: 20px;
+      width: 40px; height: 40px;
+      border-top: 2px solid var(--red);
+      border-left: 2px solid var(--red);
+    }
+    .about-corner-br {
+      position: absolute; bottom: 20px; right: 20px;
+      width: 40px; height: 40px;
+      border-bottom: 2px solid var(--red);
+      border-right: 2px solid var(--red);
+    }
+    .about-text p {
+      font-size: 0.9rem; line-height: 2;
+      color: var(--white-dim); margin-bottom: 24px;
+    }
+    .about-text p strong { color: var(--white); font-weight: 600; }
+    .about-values {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+      margin-top: 48px;
+    }
+    .value-item {
+      padding: 24px;
+      border: 1px solid var(--border);
+      background: var(--white-faint);
+    }
+    .value-icon {
+      font-size: 1.4rem; margin-bottom: 12px;
+    }
+    .value-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.78rem; letter-spacing: 0.1em;
+      color: var(--red-bright); margin-bottom: 8px;
+    }
+    .value-desc {
+      font-size: 0.75rem; color: var(--white-dim); line-height: 1.7;
+    }
+
+    /* ─── CONTACT ─── */
+    .contact-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 80px;
+    }
+    .contact-info { }
+    .contact-label {
+      font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--red-bright); margin-bottom: 12px; margin-top: 40px;
+    }
+    .contact-label:first-child { margin-top: 0; }
+    .contact-value {
+      font-size: 0.9rem; color: var(--white);
+    }
+    .contact-value a {
+      color: var(--white); text-decoration: none;
+      border-bottom: 1px solid var(--border); transition: border-color 0.3s;
+    }
+    .contact-value a:hover { border-color: var(--red-bright); }
+
+    .order-steps {
+      margin-top: 48px;
+    }
+    .order-step {
+      display: flex; gap: 20px; align-items: flex-start;
+      margin-bottom: 28px;
+    }
+    .step-num {
+      width: 36px; height: 36px; flex-shrink: 0;
+      border: 1px solid var(--red);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem; color: var(--red-bright);
+    }
+    .step-text {
+      font-size: 0.82rem; color: var(--white-dim);
+      line-height: 1.8; padding-top: 8px;
+    }
+    .step-text strong { color: var(--white); }
+
+    /* contact form side */
+    .order-box {
+      background: var(--black-2);
+      border: 1px solid var(--border);
+      padding: 48px;
+    }
+    .order-box-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem; letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+    .order-box-sub {
+      font-size: 0.78rem; color: var(--white-dim);
+      margin-bottom: 36px; line-height: 1.6;
+    }
+    .form-group { margin-bottom: 24px; }
+    .form-label {
+      display: block;
+      font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--red-bright); margin-bottom: 10px;
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%; padding: 14px 18px;
+      background: var(--black-3);
+      border: 1px solid var(--border);
+      color: var(--white);
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.82rem;
+      outline: none;
+      transition: border-color 0.3s;
+      appearance: none;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--red);
+    }
+    .form-textarea { resize: vertical; min-height: 100px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .whatsapp-btn {
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      width: 100%; padding: 16px;
+      background: #1a472a;
+      border: 1px solid #2d6a4f;
+      color: var(--white);
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
+      cursor: none; text-decoration: none;
+      transition: all 0.3s; margin-top: 16px;
+    }
+    .whatsapp-btn:hover { background: #2d6a4f; }
+    .divider {
+      display: flex; align-items: center; gap: 16px;
+      font-size: 0.65rem; letter-spacing: 0.2em; color: var(--white-dim);
+      margin: 20px 0;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 60px 8% 40px;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 60px;
+    }
+    .footer-brand {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.2rem; color: var(--white);
+      margin-bottom: 16px;
+    }
+    .footer-brand span { color: var(--red-bright); }
+    .footer-tagline {
+      font-size: 0.75rem; color: var(--white-dim);
+      letter-spacing: 0.12em; font-style: italic;
+    }
+    .footer-col-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.72rem; letter-spacing: 0.2em;
+      color: var(--red-bright); margin-bottom: 24px;
+      text-transform: uppercase;
+    }
+    .footer-links { list-style: none; }
+    .footer-links li { margin-bottom: 12px; }
+    .footer-links a {
+      font-size: 0.78rem; color: var(--white-dim);
+      text-decoration: none; letter-spacing: 0.06em;
+      cursor: none; transition: color 0.3s;
+    }
+    .footer-links a:hover { color: var(--red-bright); }
+    .footer-bottom {
+      padding: 28px 8% 28px;
+      border-top: 1px solid rgba(155,0,0,0.1);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-copy {
+      font-size: 0.68rem; color: var(--white-dim);
+      letter-spacing: 0.1em;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      nav { padding: 18px 5%; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .nav-links.open {
+        display: flex; flex-direction: column;
+        position: fixed; inset: 0; top: 70px;
+        background: var(--black);
+        padding: 40px 8%; gap: 28px;
+        z-index: 999;
+      }
+      .nav-links.open a { font-size: 1.2rem; }
+
+      .hero-content { padding: 0 5%; }
+      .section-pad { padding: 70px 5%; }
+
+      .about-layout { grid-template-columns: 1fr; gap: 40px; }
+      .about-visual { aspect-ratio: 16/9; }
+      .contact-layout { grid-template-columns: 1fr; gap: 40px; }
+      footer { grid-template-columns: 1fr; gap: 36px; }
+      .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+      .hero-badge { display: none; }
+      .form-row { grid-template-columns: 1fr; }
+      .order-box { padding: 28px; }
+      .about-values { grid-template-columns: 1fr; }
+    }
+
+    /* ─── MOBILE MENU OVERLAY ─── */
+    .mobile-menu-overlay {
+      display: none;
+      position: fixed; inset: 0; top: 70px;
+      background: rgba(5,5,5,0.97);
+      z-index: 998;
+      flex-direction: column;
+      padding: 48px 8%;
+      gap: 32px;
+    }
+    .mobile-menu-overlay.open { display: flex; }
+    .mobile-menu-overlay a {
+      color: var(--white-dim); text-decoration: none;
+      font-family: 'Cinzel', serif;
+      font-size: 1.4rem; letter-spacing: 0.1em;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+      transition: color 0.3s;
+    }
+    .mobile-menu-overlay a:hover { color: var(--red-bright); }
+  </style>
+</head>
+<body>
+
+<!-- custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo" onclick="showPage('home')">ON<span>TO</span>YOU</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#" onclick="showPage('home')" class="active" id="nav-home">Home</a></li>
+    <li><a href="#" onclick="showPage('shop')" id="nav-shop">Shop</a></li>
+    <li><a href="#" onclick="showPage('gallery')" id="nav-gallery">Gallery</a></li>
+    <li><a href="#" onclick="showPage('about')" id="nav-about">About</a></li>
+    <li><a href="#" onclick="showPage('contact')" id="nav-contact">Order</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu-overlay" id="mobileMenu">
+  <a href="#" onclick="showPage('home'); toggleMenu()">Home</a>
+  <a href="#" onclick="showPage('shop'); toggleMenu()">Shop</a>
+  <a href="#" onclick="showPage('gallery'); toggleMenu()">Gallery</a>
+  <a href="#" onclick="showPage('about'); toggleMenu()">About</a>
+  <a href="#" onclick="showPage('contact'); toggleMenu()">Order</a>
+</div>
+
+<!-- ═══════════ HOME ═══════════ -->
+<section class="page active" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Solid Perfume</div>
+    <h1 class="hero-title">
+      <span class="line-red">On To</span>
+      <span class="line-white">You.</span>
+    </h1>
+    <p class="hero-sub">Fragrance, Anytime. Anywhere.</p>
+    <div class="hero-btns">
+      <a href="#" class="btn-primary" onclick="showPage('shop')"><span>Shop Now</span></a>
+      <a href="#" class="btn-outline" onclick="showPage('about')">Our Story</a>
+    </div>
+  </div>
+  <div class="hero-badge">
+    <div class="hero-badge-inner">
+      SOLID<br>·<br>PERFUME<br>·<br>HAND<br>CRAFTED
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Explore</span>
+  </div>
+
+  <!-- Mini feature strip -->
+  <div style="position:relative;z-index:2;padding:0 8% 80px;margin-top:auto;">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px;max-width:700px;margin-top:100px;">
+      <div style="padding:28px;border:1px solid var(--border);background:var(--white-faint);">
+        <div style="font-size:0.6rem;letter-spacing:0.3em;color:var(--red-bright);margin-bottom:10px;">ROLLIES</div>
+        <div style="font-family:'Cinzel',serif;font-size:1.4rem;">₹75</div>
+        <div style="font-size:0.7rem;color:var(--white-dim);margin-top:4px;">15 gm</div>
+      </div>
+      <div style="padding:28px;border:1px solid var(--border);background:rgba(155,0,0,0.08);">
+        <div style="font-size:0.6rem;letter-spacing:0.3em;color:var(--red-bright);margin-bottom:10px;">SOLIES</div>
+        <div style="font-family:'Cinzel',serif;font-size:1.4rem;">₹150</div>
+        <div style="font-size:0.7rem;color:var(--white-dim);margin-top:4px;">30 gm</div>
+      </div>
+      <div style="padding:28px;border:1px solid var(--border);background:var(--white-faint);">
+        <div style="font-size:0.6rem;letter-spacing:0.3em;color:var(--red-bright);margin-bottom:10px;">SLIDDERS</div>
+        <div style="font-family:'Cinzel',serif;font-size:1.4rem;">₹100</div>
+        <div style="font-size:0.7rem;color:var(--white-dim);margin-top:4px;">15 gm</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SHOP ═══════════ -->
+<section class="page" id="shop">
+  <div class="section-pad">
+    <div class="red-line"></div>
+    <h2 class="section-title">Our Products</h2>
+    <p class="section-subtitle">Compact, spill-proof solid perfumes crafted with natural oils and butters. Choose your style, choose your scent.</p>
+
+    <!-- Tabs -->
+    <div class="product-tabs">
+      <button class="tab-btn active" onclick="showTab('rollies', this)">Rollies</button>
+      <button class="tab-btn" onclick="showTab('solies', this)">Solies</button>
+      <button class="tab-btn" onclick="showTab('slidders', this)">Slidders</button>
+      <button class="tab-btn" onclick="showTab('fragrances', this)">Fragrances</button>
+    </div>
+
+    <!-- ROLLIES -->
+    <div class="tab-content active" id="tab-rollies">
+      <div class="product-grid">
+        <div class="product-card">
+          <div class="product-img-wrap">
+            <div class="product-placeholder">●</div>
+            <div class="product-img-overlay"></div>
+          </div>
+          <div class="product-info">
+            <div class="product-name">Rolies [ Humans ]</div>
+            <div class="product-desc">Street Art Series. Urban art meets everyday care. Bold alien artwork on a sleek roll-on tube. Packed with natural oils and butters.</div>
+            <div class="product-meta">
+              <div class="product-price">₹75</div>
+              <div class="product-weight">15 gm</div>
+            </div>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-img-wrap">
+            <div class="product-placeholder">●</div>
+            <div class="product-img-overlay"></div>
+          </div>
+          <div class="product-info">
+            <div class="product-name">Rolies [ Bro Chill ]</div>
+            <div class="product-desc">Street Art Series. Buddha meets street culture. A roll-on that screams calm and confidence. Natural fragrance, bold design.</div>
+            <div class="product-meta">
+              <div class="product-price">₹75</div>
+              <div class="product-weight">15 gm</div>
+            </div>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-img-wrap">
+            <div class="product-placeholder">●</div>
+            <div class="product-img-overlay"></div>
+          </div>
+          <div class="product-info">
+            <div class="product-name">Rolies [ World Crazy ]</div>
+            <div class="product-desc">Street Art Series. Vibrant, psychedelic energy in a pocket-sized roll-on. For those who live loud and smell incredible.</div>
+            <div class="product-meta">
+              <div class="product-price">₹75</div>
+              <div class="product-weight">15 gm</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOLIES -->
+    <div class="tab-content" id="tab-solies">
+      <div class="product-grid">
+        <div class="product-card">
+          <div class="product-img-wrap">
+            <div class="product-placeholder">◉</div>
+            <div class="product-img-overlay"></div>
+          </div>
+          <div class="product-info">
+            <div class="product-name">Solies [ Mantally Challenged? ]</div>
+            <div class="product-desc">Limited Edition Art Series. A collectible tin featuring bold monochrome illustration. Hand-poured with natural waxes and oils. A fragrance and a piece of art.</div>
+            <div class="product-meta">
+              <div class="product-price">₹150</div>
+              <div class="product-weight">30 gm</div>
+            </div>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-img-wrap">
+            <div class="product-placeholder">◉</div>
+            <div class="product-img-overlay"></div>
+          </div>
+          <div class="product-info">
+            <div class="product-name">Solies [ More Designs Coming ]</div>
+            <div class="product-desc">New Art Series editions dropping soon. Unique artistic tins with the same premium solid perfume formula. Stay tuned.</div>
+            <div class="product-meta">
+              <div class="product-price">₹150</div>
+              <div class="product-weight">30 gm</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDDERS -->
+    <div class="tab-content" id="tab-slidders">
+      <div class="product-grid">
+        <div class="product-card">
+          <div class="product-img-wrap">
+            <div class="product-placeholder">▬</div>
+            <div class="product-img-overlay"></div>
+          </div>
+          <div class="product-info">
+            <div class="product-name">Slidders [ Arrows ]</div>
+            <div class="product-desc">Street Art Series. Striking lightning/arrow artwork. Raw energy, fearless individuality. Solid perfume in a sleek pocket-sized slider tin.</div>
+            <div class="product-meta">
+              <div class="product-price">₹100</div>
+              <div class="product-weight">15 gm</div>
+            </div>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-img-wrap">
+            <div class="product-placeholder">▬</div>
+            <div class="product-img-overlay"></div>
+          </div>
+          <div class="product-info">
+            <div class="product-name">Slidders [ Couple ]</div>
+            <div class="product-desc">Street Art Series. A beautiful couple silhouette in glowing blue. Perfect for those who carry love wherever they go.</div>
+            <div class="product-meta">
+              <div class="product-price">₹100</div>
+              <div class="product-weight">15 gm</div>
+            </div>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-img-wrap">
+            <div class="product-placeholder">▬</div>
+            <div class="product-img-overlay"></div>
+          </div>
+          <div class="product-info">
+            <div class="product-name">Slidders [ Real Men ]</div>
+            <div class="product-desc">Street Art Series. Bold typography with attitude. A statement slider tin for those who don't follow trends — they set them.</div>
+            <div class="product-meta">
+              <div class="product-price">₹100</div>
+              <div class="product-weight">15 gm</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FRAGRANCES -->
+    <div class="tab-content" id="tab-fragrances">
+      <p style="font-size:0.88rem;color:var(--white-dim);line-height:2;max-width:560px;margin-bottom:48px;">We blend the best of both worlds to offer something novel and exciting, yet familiar and comforting. All our fragrances are available across all product types.</p>
+      <div class="fragrance-categories">
+        <div>
+          <div class="frag-cat-label">Warm</div>
+          <div class="frag-tags">
+            <div class="frag-tag">Vanilla Bliss</div>
+            <div class="frag-tag">Rose Elegance</div>
+            <div class="frag-tag">Chocolate Delight</div>
+            <div class="frag-tag">Coffee Aura</div>
+          </div>
+        </div>
+        <div>
+          <div class="frag-cat-label">Citric</div>
+          <div class="frag-tags">
+            <div class="frag-tag">Blueberry Bliss</div>
+            <div class="frag-tag">Peach Serenity</div>
+            <div class="frag-tag">Lemon Zest</div>
+            <div class="frag-tag">Pineapple Paradise</div>
+          </div>
+        </div>
+        <div>
+          <div class="frag-cat-label">Combo</div>
+          <div class="frag-tags">
+            <div class="frag-tag">CoCoXVanilla Harmony</div>
+            <div class="frag-tag">FreshLemonXCoffee Fusion</div>
+            <div class="frag-tag">ChocolateXBlueBerries Indulgence</div>
+            <div class="frag-tag">VanillaXRose Charm</div>
+            <div class="frag-tag">PineappleXCoffee Fusion</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:48px;padding:32px;border:1px solid var(--border);background:var(--white-faint);max-width:500px;">
+        <div style="font-size:0.62rem;letter-spacing:0.3em;color:var(--red-bright);margin-bottom:12px;">VANILLA BLISS — FEATURED SCENT</div>
+        <p style="font-size:0.82rem;color:var(--white-dim);line-height:1.9;">A warm, comforting fragrance that evokes coziness and elegance. Opens with soft gourmand notes, settles into a rich velvety heart. Perfect for daily wear — subtle charm with long-lasting presence.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ GALLERY ═══════════ -->
+<section class="page" id="gallery">
+  <div class="section-pad">
+    <div class="red-line"></div>
+    <h2 class="section-title">Sticker Gallery</h2>
+    <p class="sticker-intro">"A hand-picked collection of stickers to kickstart your hustle."<br>First, choose the sticker you like — then pick your fragrance.</p>
+
+    <div class="sticker-filter">
+      <button class="filter-btn active" onclick="filterStickers('all', this)">All</button>
+      <button class="filter-btn" onclick="filterStickers('rollie', this)">Rollies</button>
+      <button class="filter-btn" onclick="filterStickers('solie', this)">Solies</button>
+      <button class="filter-btn" onclick="filterStickers('slidder', this)">Slidders</button>
+    </div>
+
+    <div class="sticker-grid" id="stickerGrid">
+      <div class="sticker-card" data-type="rollie">
+        <div class="sticker-bg">👽</div>
+        <div class="sticker-badge">Rollies</div>
+        <div class="sticker-name">Humans</div>
+        <div class="sticker-type">Street Art Series · ₹75</div>
+      </div>
+      <div class="sticker-card" data-type="rollie">
+        <div class="sticker-bg">🧘</div>
+        <div class="sticker-badge">Rollies</div>
+        <div class="sticker-name">Bro Chill</div>
+        <div class="sticker-type">Street Art Series · ₹75</div>
+      </div>
+      <div class="sticker-card" data-type="rollie">
+        <div class="sticker-bg">🌍</div>
+        <div class="sticker-badge">Rollies</div>
+        <div class="sticker-name">World Crazy</div>
+        <div class="sticker-type">Street Art Series · ₹75</div>
+      </div>
+      <div class="sticker-card" data-type="solie">
+        <div class="sticker-bg">🎨</div>
+        <div class="sticker-badge">Solies</div>
+        <div class="sticker-name">Mantally Challenged?</div>
+        <div class="sticker-type">Limited Art Series · ₹150</div>
+      </div>
+      <div class="sticker-card" data-type="slidder">
+        <div class="sticker-bg">⚡</div>
+        <div class="sticker-badge">Slidders</div>
+        <div class="sticker-name">Arrows</div>
+        <div class="sticker-type">Street Art Series · ₹100</div>
+      </div>
+      <div class="sticker-card" data-type="slidder">
+        <div class="sticker-bg">💙</div>
+        <div class="sticker-badge">Slidders</div>
+        <div class="sticker-name">Couple</div>
+        <div class="sticker-type">Street Art Series · ₹100</div>
+      </div>
+      <div class="sticker-card" data-type="slidder">
+        <div class="sticker-bg">🖤</div>
+        <div class="sticker-badge">Slidders</div>
+        <div class="sticker-name">Real Men</div>
+        <div class="sticker-type">Street Art Series · ₹100</div>
+      </div>
+    </div>
+
+    <div style="margin-top:60px;text-align:center;">
+      <a href="#" class="btn-primary" onclick="showPage('contact')"><span>Order Your Favourite →</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ ABOUT ═══════════ -->
+<section class="page" id="about">
+  <div class="section-pad">
+    <div class="red-line"></div>
+    <h2 class="section-title">Our Story</h2>
+    <p class="section-subtitle">A passionate team driven by fragrance, individuality, and style.</p>
+
+    <div class="about-layout">
+      <div class="about-visual">
+        <div class="about-visual-inner">
+          <div class="about-visual-text">ON<br>TO<br>YOU</div>
+        </div>
+        <div class="about-corner"></div>
+        <div class="about-corner-br"></div>
+      </div>
+      <div class="about-text">
+        <p>At <strong>On To You</strong>, we are a passionate team driven by the vision of transforming everyday experiences through the power of fragrance. Our mission is to craft <strong>unique solid perfumes</strong> that are not only convenient and long-lasting but also reflect individuality and style.</p>
+        <p>We believe that fragrance is more than just a scent — it's a personal story, a memory, and an emotion that stays with you throughout the day. That's why our products are thoughtfully designed for <strong>modern lifestyles</strong>, blending elegance with practicality.</p>
+        <p>Unlike traditional perfumes, our solid perfumes are compact, spill-proof, and easy to carry — making them the perfect companion for people who are always on the go.</p>
+        <p>Our focus is on <strong>quality, creativity, and sustainability</strong>. Every design and fragrance is carefully curated to give customers a premium experience while ensuring accessibility for all. With On To You — you don't just wear a fragrance. You <strong>carry an aura</strong>.</p>
+
+        <div class="about-values">
+          <div class="value-item">
+            <div class="value-icon">🌿</div>
+            <div class="value-label">Natural</div>
+            <div class="value-desc">Crafted with natural oils, waxes, and butters. Gentle on skin, powerful in scent.</div>
+          </div>
+          <div class="value-item">
+            <div class="value-icon">🎨</div>
+            <div class="value-label">Artistic</div>
+            <div class="value-desc">Every tin is a statement. Our designs are collectible works of street art and culture.</div>
+          </div>
+          <div class="value-item">
+            <div class="value-icon">⚡</div>
+            <div class="value-label">Portable</div>
+            <div class="value-desc">Pocket-sized and spill-proof. Fragrance on your terms, wherever life takes you.</div>
+          </div>
+          <div class="value-item">
+            <div class="value-icon">✨</div>
+            <div class="value-label">Accessible</div>
+            <div class="value-desc">Premium fragrance experience at a price that doesn't compromise on quality.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CONTACT / ORDER ═══════════ -->
+<section class="page" id="contact">
+  <div class="section-pad">
+    <div class="red-line"></div>
+    <h2 class="section-title">Place Your Order</h2>
+    <p class="section-subtitle">Simple, personal ordering. No complicated checkout — just reach out and we'll take care of you.</p>
+
+    <div class="contact-layout">
+      <div class="contact-info">
+        <div class="contact-label">Email</div>
+        <div class="contact-value"><a href="mailto:minimiragee@gmail.com">minimiragee@gmail.com</a></div>
+
+        <div class="contact-label">How to Order</div>
+        <div class="order-steps">
+          <div class="order-step">
+            <div class="step-num">01</div>
+            <div class="step-text"><strong>Choose your sticker design</strong> from the Gallery — Rollies, Solies, or Slidders</div>
+          </div>
+          <div class="order-step">
+            <div class="step-num">02</div>
+            <div class="step-text"><strong>Select your fragrance</strong> — Warm, Citric, or Combo</div>
+          </div>
+          <div class="order-step">
+            <div class="step-num">03</div>
+            <div class="step-text"><strong>Choose your quantity</strong></div>
+          </div>
+          <div class="order-step">
+            <div class="step-num">04</div>
+            <div class="step-text"><strong>Send us a message</strong> on WhatsApp or email with: sticker name, fragrance, quantity, delivery address & payment details</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-box">
+        <div class="order-box-title">Build Your Order</div>
+        <div class="order-box-sub">Fill in your preferences below, then contact us via WhatsApp or email to confirm and pay.</div>
+
+        <div class="form-group">
+          <label class="form-label">Product Type</label>
+          <select class="form-select" id="productType" onchange="updateStickers()">
+            <option value="">Select product...</option>
+            <option value="rollie">Rollies — ₹75 / 15gm</option>
+            <option value="solie">Solies — ₹150 / 30gm</option>
+            <option value="slidder">Slidders — ₹100 / 15gm</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Sticker Design</label>
+          <select class="form-select" id="stickerDesign">
+            <option value="">Select product type first...</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Fragrance</label>
+          <select class="form-select" id="fragrance">
+            <option value="">Select fragrance...</option>
+            <optgroup label="— Warm —">
+              <option>Vanilla Bliss</option>
+              <option>Rose Elegance</option>
+              <option>Chocolate Delight</option>
+              <option>Coffee Aura</option>
+            </optgroup>
+            <optgroup label="— Citric —">
+              <option>Blueberry Bliss</option>
+              <option>Peach Serenity</option>
+              <option>Lemon Zest</option>
+              <option>Pineapple Paradise</option>
+            </optgroup>
+            <optgroup label="— Combo —">
+              <option>CoCoXVanilla Harmony</option>
+              <option>FreshLemonXCoffee Fusion</option>
+              <option>ChocolateXBlueBerries Indulgence</option>
+              <option>VanillaXRose Charm</option>
+              <option>PineappleXCoffee Fusion</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Quantity</label>
+            <input type="number" class="form-input" id="qty" min="1" value="1" placeholder="1"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Your Name</label>
+            <input type="text" class="form-input" id="custName" placeholder="Name"/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Order Summary</label>
+          <div class="form-textarea" style="padding:14px 18px;font-size:0.82rem;color:var(--white-dim);min-height:80px;background:var(--black-3);border:1px solid var(--border);" id="orderSummary">Fill the fields above to see your order summary.</div>
+        </div>
+
+        <a href="#" class="whatsapp-btn" id="whatsappBtn" onclick="openWhatsApp()">
+          <span>📱</span>
+          <span>Send via WhatsApp</span>
+        </a>
+        <div class="divider">or</div>
+        <a href="#" class="btn-primary" style="display:block;text-align:center;width:100%;" onclick="openEmail()">
+          <span>📧 &nbsp;Send via Email</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-brand">ON<span>TO</span>YOU</div>
+    <div class="footer-tagline">"Fragrance, Anytime. Anywhere."</div>
+  </div>
+  <div>
+    <div class="footer-col-title">Navigate</div>
+    <ul class="footer-links">
+      <li><a href="#" onclick="showPage('home')">Home</a></li>
+      <li><a href="#" onclick="showPage('shop')">Shop</a></li>
+      <li><a href="#" onclick="showPage('gallery')">Gallery</a></li>
+      <li><a href="#" onclick="showPage('about')">About</a></li>
+      <li><a href="#" onclick="showPage('contact')">Order</a></li>
+    </ul>
+  </div>
+  <div>
+    <div class="footer-col-title">Contact</div>
+    <ul class="footer-links">
+      <li><a href="mailto:minimiragee@gmail.com">minimiragee@gmail.com</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <div class="footer-copy">© 2025 On To You. All rights reserved.</div>
+  <div class="footer-copy">Solid Perfume · Handcrafted · India</div>
+</div>
+
+<script>
+  // ─── CURSOR ───
+  const cursor = document.getElementById('cursor');
+  const cursorRing = document.getElementById('cursorRing');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    setTimeout(() => {
+      cursorRing.style.left = e.clientX + 'px';
+      cursorRing.style.top = e.clientY + 'px';
+    }, 80);
+  });
+
+  // ─── NAVIGATION ───
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    const navEl = document.getElementById('nav-' + id);
+    if (navEl) navEl.classList.add('active');
+    window.scrollTo(0, 0);
+    return false;
+  }
+
+  function toggleMenu() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+  }
+
+  // ─── TABS ───
+  function showTab(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // ─── STICKER FILTER ───
+  function filterStickers(type, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.sticker-card').forEach(c => {
+      c.style.display = (type === 'all' || c.dataset.type === type) ? 'flex' : 'none';
+    });
+  }
+
+  // ─── ORDER FORM ───
+  const stickers = {
+    rollie: ['Humans', 'Bro Chill', 'World Crazy'],
+    solie: ['Mantally Challenged?'],
+    slidder: ['Arrows', 'Couple', 'Real Men']
+  };
+  const prices = { rollie: 75, solie: 150, slidder: 100 };
+  const names = { rollie: 'Rollies', solie: 'Solies', slidder: 'Slidders' };
+
+  function updateStickers() {
+    const type = document.getElementById('productType').value;
+    const sel = document.getElementById('stickerDesign');
+    sel.innerHTML = '';
+    if (!type) { sel.innerHTML = '<option>Select product type first...</option>'; return; }
+    sel.innerHTML = '<option value="">Select sticker...</option>';
+    stickers[type].forEach(s => {
+      sel.innerHTML += `<option>${s}</option>`;
+    });
+    updateSummary();
+  }
+
+  function updateSummary() {
+    const type = document.getElementById('productType').value;
+    const sticker = document.getElementById('stickerDesign').value;
+    const frag = document.getElementById('fragrance').value;
+    const qty = document.getElementById('qty').value || 1;
+    const name = document.getElementById('custName').value;
+    if (!type || !sticker || !frag) {
+      document.getElementById('orderSummary').textContent = 'Fill the fields above to see your order summary.';
+      return;
+    }
+    const total = prices[type] * qty;
+    document.getElementById('orderSummary').textContent =
+      `${name ? name + ' — ' : ''}${qty}x ${names[type]} [${sticker}] · ${frag} · ₹${total}`;
+  }
+
+  ['productType','stickerDesign','fragrance','qty','custName'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', updateSummary);
+    if (el) el.addEventListener('input', updateSummary);
+  });
+
+  function getOrderText() {
+    const type = document.getElementById('productType').value;
+    const sticker = document.getElementById('stickerDesign').value;
+    const frag = document.getElementById('fragrance').value;
+    const qty = document.getElementById('qty').value || 1;
+    const name = document.getElementById('custName').value;
+    return `Hi! I'd like to place an order:%0A%0AName: ${name}%0AProduct: ${names[type] || '?'}%0ASticker: ${sticker || '?'}%0AFragrance: ${frag || '?'}%0AQuantity: ${qty}%0A%0APlease share payment and delivery details. Thank you!`;
+  }
+
+  function openWhatsApp() {
+    window.open('https://wa.me/?text=' + getOrderText(), '_blank');
+    return false;
+  }
+
+  function openEmail() {
+    const type = document.getElementById('productType').value;
+    const sticker = document.getElementById('stickerDesign').value;
+    const frag = document.getElementById('fragrance').value;
+    const qty = document.getElementById('qty').value || 1;
+    const name = document.getElementById('custName').value;
+    const body = `Hi!\n\nI'd like to place an order:\n\nName: ${name}\nProduct: ${names[type] || '?'}\nSticker: ${sticker || '?'}\nFragrance: ${frag || '?'}\nQuantity: ${qty}\n\nPlease share payment and delivery details. Thank you!`;
+    window.open(`mailto:minimiragee@gmail.com?subject=Order - On To You Perfume&body=${encodeURIComponent(body)}`);
+    return false;
+  }
+</script>
+</body>
+</html>
