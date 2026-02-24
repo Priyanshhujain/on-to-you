@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- ============================================================
+       WEBSITE TITLE — Change this
+  ============================================================ -->
+  <title>ON TO YOU — Fragrance, Anytime. Anywhere.</title>
+
+  <!-- ============================================================
+       FONTS
+  ============================================================ -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
+
+  <style>
+
+    /* ============================================================
+       BRAND COLORS — Starry Night palette
+       --blue-deep    = main dark background
+       --blue-mid     = card backgrounds
+       --gold         = accent color (like Van Gogh's moon/stars)
+       --indigo       = swirl color
+    ============================================================ */
+    :root {
+      --blue-deep:   #05091a;
+      --blue-mid:    #0a1033;
+      --blue-card:   #0d1540;
+      --blue-light:  #1a2a6c;
+      --indigo:      #2337a0;
+      --indigo-bright:#3d52cc;
+      --gold:        #f5c842;
+      --gold-dim:    rgba(245, 200, 66, 0.5);
+      --gold-faint:  rgba(245, 200, 66, 0.08);
+      --white:       #eef2ff;
+      --white-dim:   rgba(238, 242, 255, 0.55);
+      --white-faint: rgba(238, 242, 255, 0.06);
+      --border:      rgba(61, 82, 204, 0.3);
+      --border-gold: rgba(245, 200, 66, 0.35);
+      --swirl1:      #1b3a8a;
+      --swirl2:      #243da8;
+    }
+
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body {
+      background: var(--blue-deep);
+      color: var(--white);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: none;
+      min-height: 100vh;
+    }
+
+    /* ============================================================
+       CUSTOM CURSOR — Gold star cursor
+    ============================================================ */
+    .cursor {
+      width: 8px; height: 8px;
+      background: var(--gold);
+      border-radius: 50%;
+      position: fixed; top:0; left:0;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: width .2s, height .2s;
+      box-shadow: 0 0 10px var(--gold), 0 0 20px var(--gold-dim);
+    }
+    .cursor-ring {
+      width: 32px; height: 32px;
+      border: 1px solid var(--gold-dim);
+      border-radius: 50%;
+      position: fixed; top:0; left:0;
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: transform .12s ease;
+    }
+
+    /* ============================================================
+       STARRY NIGHT ANIMATED BACKGROUND
+       Pure CSS Van Gogh swirling sky
+    ============================================================ */
+    .starry-bg {
+      position: fixed; inset: 0; z-index: 0;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 120% 80% at 30% 20%, #1a2f8a 0%, transparent 55%),
+        radial-gradient(ellipse 80% 60% at 75% 70%, #0d1e6b 0%, transparent 50%),
+        radial-gradient(ellipse 60% 40% at 10% 80%, #0e2060 0%, transparent 45%),
+        linear-gradient(160deg, #05091a 0%, #0a1440 40%, #060c28 100%);
+    }
+
+    /* Swirling orbs */
+    .swirl {
+      position: absolute; border-radius: 50%;
+      filter: blur(60px); opacity: 0.18;
+      animation: swirl 18s ease-in-out infinite alternate;
+    }
+    .swirl-1 { width:700px; height:700px; background: radial-gradient(circle, #2a4db5, transparent 70%); top:-200px; left:-150px; animation-duration: 20s; }
+    .swirl-2 { width:500px; height:500px; background: radial-gradient(circle, #1e3ea8, transparent 70%); top:20%; right:-100px; animation-duration: 15s; animation-delay: -5s; }
+    .swirl-3 { width:400px; height:400px; background: radial-gradient(circle, #3d52cc, transparent 70%); bottom:10%; left:20%; animation-duration: 22s; animation-delay: -8s; }
+    .swirl-4 { width:300px; height:300px; background: radial-gradient(circle, #f5c842, transparent 70%); top:15%; right:25%; opacity: 0.08; animation-duration: 25s; }
+    .swirl-5 { width:250px; height:250px; background: radial-gradient(circle, #f5c842, transparent 70%); bottom:30%; left:5%; opacity: 0.06; animation-duration: 19s; animation-delay: -3s; }
+
+    @keyframes swirl {
+      0% { transform: translate(0,0) scale(1); }
+      33% { transform: translate(40px,-30px) scale(1.1); }
+      66% { transform: translate(-20px,50px) scale(0.95); }
+      100% { transform: translate(30px,20px) scale(1.05); }
+    }
+
+    /* Stars */
+    .stars-layer {
+      position: absolute; inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 10% 15%, rgba(245,200,66,0.9) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 25% 8%, rgba(245,200,66,0.7) 0%, transparent 100%),
+        radial-gradient(1px 1px at 40% 22%, rgba(255,255,255,0.8) 0%, transparent 100%),
+        radial-gradient(2px 2px at 55% 5%, rgba(245,200,66,0.9) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 18%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 85% 12%, rgba(245,200,66,0.8) 0%, transparent 100%),
+        radial-gradient(1px 1px at 92% 30%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 15% 45%, rgba(245,200,66,0.6) 0%, transparent 100%),
+        radial-gradient(2px 2px at 78% 42%, rgba(245,200,66,0.7) 0%, transparent 100%),
+        radial-gradient(1px 1px at 62% 55%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 32% 68%, rgba(245,200,66,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 48% 75%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(2px 2px at 88% 65%, rgba(245,200,66,0.8) 0%, transparent 100%),
+        radial-gradient(1px 1px at 5% 72%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 20% 85%, rgba(245,200,66,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 65% 88%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(2px 2px at 45% 92%, rgba(245,200,66,0.7) 0%, transparent 100%),
+        radial-gradient(1px 1px at 95% 80%, rgba(255,255,255,0.6) 0%, transparent 100%);
+      animation: twinkle 4s ease-in-out infinite alternate;
+    }
+    @keyframes twinkle {
+      0% { opacity: 0.7; }
+      100% { opacity: 1; }
+    }
+
+    /* Moon glow */
+    .moon {
+      position: absolute; top: 8%; right: 12%;
+      width: 80px; height: 80px;
+      background: radial-gradient(circle at 35% 35%, #fff7c0, #f5c842 40%, #d4a017 100%);
+      border-radius: 50%;
+      box-shadow:
+        0 0 30px 10px rgba(245,200,66,0.4),
+        0 0 80px 30px rgba(245,200,66,0.15),
+        0 0 150px 60px rgba(245,200,66,0.07);
+      animation: moonPulse 5s ease-in-out infinite alternate;
+    }
+    @keyframes moonPulse {
+      0% { box-shadow: 0 0 30px 10px rgba(245,200,66,0.4), 0 0 80px 30px rgba(245,200,66,0.15); }
+      100% { box-shadow: 0 0 40px 15px rgba(245,200,66,0.55), 0 0 100px 40px rgba(245,200,66,0.22); }
+    }
+
+    /* Van Gogh swirl lines */
+    .swirl-lines {
+      position: absolute; inset: 0;
+      background-image:
+        radial-gradient(ellipse 200% 30% at 50% 25%, rgba(61,82,204,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 150% 20% at 30% 50%, rgba(61,82,204,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse 180% 25% at 70% 70%, rgba(35,55,160,0.1) 0%, transparent 55%);
+      animation: swirl 30s linear infinite;
+    }
+
+    /* ============================================================
+       NAVIGATION
+    ============================================================ */
+    nav {
+      position: fixed; top:0; left:0; right:0; z-index:1000;
+      padding: 20px 5%;
+      display: flex; align-items:center; justify-content:space-between;
+      background: rgba(5,9,26,0.7);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    /* Brand name */
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem; font-weight: 700;
+      letter-spacing: 0.08em; color: var(--white);
+      text-decoration: none; cursor: none;
+    }
+    .nav-logo span { color: var(--gold); }
+    /* Nav links */
+    .nav-links { display:flex; gap:36px; list-style:none; }
+    .nav-links a {
+      color: var(--white-dim); text-decoration:none;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem; letter-spacing:0.18em; text-transform:uppercase;
+      transition: color .3s; cursor: none; position: relative;
+    }
+    .nav-links a::after {
+      content:''; position:absolute; bottom:-4px; left:0; right:0;
+      height:1px; background: var(--gold);
+      transform: scaleX(0); transition: transform .3s;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-links a.active { color: var(--gold); }
+    .nav-links a.active::after { transform: scaleX(1); }
+    /* Mobile */
+    .hamburger { display:none; flex-direction:column; gap:5px; cursor:none; }
+    .hamburger span { width:24px; height:1px; background:var(--white); transition:all .3s; }
+
+    /* ============================================================
+       PAGE SYSTEM
+    ============================================================ */
+    .page { display:none; min-height:100vh; padding-top:80px; position:relative; z-index:2; }
+    .page.active { display:block; animation: fadeUp .5s ease; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+
+    /* ============================================================
+       HOME PAGE
+    ============================================================ */
+    #home { display:none; min-height:100vh; position:relative; overflow:hidden; }
+    #home.active { display:flex; flex-direction:column; justify-content:center; }
+
+    .hero-content { position:relative; z-index:2; padding: 0 8%; max-width:1000px; }
+
+    /* Gen Z pill tag above title */
+    .hero-tag {
+      display: inline-flex; align-items:center; gap:8px;
+      padding: 6px 16px;
+      background: rgba(245,200,66,0.1);
+      border: 1px solid var(--border-gold);
+      border-radius: 999px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 32px;
+    }
+    .hero-tag-dot { width:6px; height:6px; background:var(--gold); border-radius:50%; animation: blink 1.5s infinite; }
+    @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.2; } }
+
+    /* Main title */
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(4rem, 10vw, 9rem);
+      font-weight: 900; line-height: 0.9; margin-bottom: 28px;
+    }
+    .hero-title .t1 { display:block; color: var(--white); letter-spacing:-0.02em; }
+    .hero-title .t2 { display:block; color: var(--gold); font-style:italic; letter-spacing:-0.01em; }
+    .hero-title .t3 { display:block; color: var(--white-dim); font-size: 0.45em; font-style:normal; letter-spacing:0.15em; font-family:'DM Mono',monospace; font-weight:300; margin-top:16px; }
+
+    /* Tagline */
+    .hero-tagline {
+      font-family:'DM Mono', monospace;
+      font-size:0.8rem; color:var(--white-dim); letter-spacing:0.2em;
+      text-transform:uppercase; margin-bottom:52px;
+    }
+
+    /* Hero buttons */
+    .hero-btns { display:flex; gap:16px; flex-wrap:wrap; }
+
+    /* ============================================================
+       BUTTONS
+    ============================================================ */
+    /* Filled gold button */
+    .btn-primary {
+      padding: 14px 40px;
+      background: var(--gold); color: #05091a;
+      border: none; font-family:'Space Grotesk',sans-serif;
+      font-size:0.75rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase;
+      text-decoration:none; cursor:none; transition:all .3s;
+      position:relative; overflow:hidden; border-radius:2px;
+    }
+    .btn-primary:hover { background:#fff7c0; transform:translateY(-2px); box-shadow:0 8px 24px rgba(245,200,66,0.3); }
+    .btn-primary span { position:relative; z-index:1; }
+    /* Outline button */
+    .btn-outline {
+      padding: 14px 40px; background:transparent;
+      color:var(--white-dim); border:1px solid rgba(238,242,255,0.2);
+      font-family:'Space Grotesk',sans-serif;
+      font-size:0.75rem; font-weight:500; letter-spacing:0.15em; text-transform:uppercase;
+      text-decoration:none; cursor:none; transition:all .3s; border-radius:2px;
+    }
+    .btn-outline:hover { border-color:var(--gold-dim); color:var(--white); }
+
+    /* ============================================================
+       HOME — Floating product image (right side)
+    ============================================================ -->
+    .hero-product-float {
+      position: absolute; right: 6%; top: 50%; transform: translateY(-50%);
+      z-index: 2; text-align:center;
+      animation: floatY 6s ease-in-out infinite;
+    }
+    @keyframes floatY {
+      0%,100% { transform: translateY(-50%) translateY(0px); }
+      50% { transform: translateY(-50%) translateY(-18px); }
+    }
+    .hero-product-box {
+      width: 200px; height: 200px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #1a2f8a, #2337a0, #0d1e6b);
+      border: 1px solid var(--border-gold);
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      font-family:'Playfair Display',serif;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(245,200,66,0.1);
+      padding: 24px;
+      position: relative; overflow:hidden;
+    }
+    .hero-product-box::before {
+      content:'';
+      position:absolute; inset:0;
+      background: radial-gradient(ellipse at 30% 30%, rgba(245,200,66,0.12), transparent 60%);
+    }
+    .hero-product-swirl {
+      font-size:3rem; margin-bottom:12px;
+    }
+    .hero-product-name {
+      font-size:1.1rem; font-weight:700; color:var(--gold); letter-spacing:0.05em;
+      text-align:center; line-height:1.2;
+    }
+    .hero-product-sub {
+      font-family:'DM Mono',monospace; font-size:0.55rem;
+      color:var(--white-dim); letter-spacing:0.2em; margin-top:6px;
+    }
+    .hero-product-price-tag {
+      position:absolute; top:-12px; right:-12px;
+      background: var(--gold); color:#05091a;
+      font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:0.75rem;
+      padding:6px 14px; border-radius:999px;
+    }
+
+    /* ============================================================
+       HOME — Price strip
+    ============================================================ */
+    .price-strip {
+      position:relative; z-index:2;
+      padding: 0 8% 80px; margin-top:auto;
+      display:flex; gap:2px; max-width:680px;
+    }
+    .price-chip {
+      flex:1; padding:20px 24px;
+      background: rgba(13,21,64,0.8);
+      border:1px solid var(--border);
+      backdrop-filter:blur(12px);
+      transition:all .3s;
+    }
+    .price-chip:hover { border-color:var(--border-gold); background:rgba(13,21,64,0.95); }
+    .price-chip-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.3em; color:var(--gold); margin-bottom:8px; }
+    .price-chip-price { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; color:var(--white); }
+    .price-chip-weight { font-size:0.65rem; color:var(--white-dim); margin-top:4px; }
+
+    /* ============================================================
+       SECTION COMMON
+    ============================================================ -->
+    .section-pad { padding:100px 8%; }
+    .section-title {
+      font-family:'Playfair Display',serif;
+      font-size:clamp(2.2rem,4.5vw,3.5rem); font-weight:900;
+      margin-bottom:12px; line-height:1.1;
+    }
+    .section-title span { color:var(--gold); font-style:italic; }
+    .section-subtitle { color:var(--white-dim); font-size:0.82rem; letter-spacing:0.1em; margin-bottom:60px; max-width:520px; line-height:1.8; }
+    .gold-line { width:48px; height:2px; background:var(--gold); margin-bottom:20px; opacity:0.7; }
+    .mono-tag {
+      display:inline-block; font-family:'DM Mono',monospace;
+      font-size:0.6rem; letter-spacing:0.25em; text-transform:uppercase;
+      color:var(--gold); margin-bottom:16px;
+    }
+
+    /* ============================================================
+       SHOP — Tabs
+    ============================================================ */
+    .product-tabs {
+      display:flex; margin-bottom:48px;
+      background:rgba(13,21,64,0.5); border-radius:999px;
+      padding:4px; max-width:600px; backdrop-filter:blur(12px);
+      border:1px solid var(--border);
+    }
+    .tab-btn {
+      flex:1; padding:12px 20px;
+      background:none; border:none; border-radius:999px;
+      color:var(--white-dim); font-family:'Space Grotesk',sans-serif;
+      font-size:0.72rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase;
+      cursor:none; transition:all .3s;
+    }
+    .tab-btn:hover { color:var(--white); }
+    .tab-btn.active { background:var(--gold); color:#05091a; font-weight:700; }
+    .tab-content { display:none; }
+    .tab-content.active { display:block; animation:fadeUp .35s ease; }
+
+    /* ============================================================
+       SHOP — Product cards
+       To add a product: copy one .product-card block
+    ============================================================ */
+    .product-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; margin-bottom:60px; }
+    .product-card {
+      background: rgba(13,21,64,0.7);
+      border:1px solid var(--border);
+      border-radius:16px;
+      overflow:hidden; transition:all .4s;
+      backdrop-filter:blur(12px);
+      position:relative;
+    }
+    .product-card::before {
+      content:''; position:absolute; inset:0; border-radius:16px;
+      background: linear-gradient(135deg, rgba(245,200,66,0.04) 0%, transparent 60%);
+      pointer-events:none;
+    }
+    .product-card:hover { border-color:var(--border-gold); transform:translateY(-6px); box-shadow:0 20px 60px rgba(0,0,0,0.4), 0 0 30px rgba(245,200,66,0.08); }
+    .product-img-wrap {
+      height:200px; background:linear-gradient(135deg,#0d1540,#162060);
+      display:flex; align-items:center; justify-content:center;
+      position:relative; overflow:hidden;
+    }
+    .product-img-wrap::after {
+      content:''; position:absolute; bottom:0; left:0; right:0; height:60px;
+      background:linear-gradient(to top, rgba(13,21,64,0.7), transparent);
+    }
+    /* Replace with <img> tag when you have real product images */
+    .product-placeholder { font-size:4rem; opacity:0.4; }
+    .product-info { padding:24px; }
+    .product-name { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; margin-bottom:8px; color:var(--white); }
+    .product-desc { font-size:0.75rem; color:var(--white-dim); line-height:1.8; margin-bottom:20px; }
+    .product-meta { display:flex; justify-content:space-between; align-items:center; }
+    .product-price { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; color:var(--gold); }
+    .product-weight {
+      font-family:'DM Mono',monospace; font-size:0.62rem;
+      color:var(--white-dim); background:rgba(245,200,66,0.08);
+      border:1px solid var(--border-gold); padding:4px 10px; border-radius:999px;
+    }
+
+    /* ============================================================
+       SHOP — Fragrance tags
+       To add a fragrance: add <div class="frag-tag">Name</div>
+    ============================================================ */
+    .fragrance-categories { display:flex; flex-direction:column; gap:40px; }
+    .frag-cat-label {
+      font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.3em;
+      text-transform:uppercase; color:var(--gold); margin-bottom:16px;
+      display:flex; align-items:center; gap:12px;
+    }
+    .frag-cat-label::after { content:''; flex:1; height:1px; background:linear-gradient(to right,var(--border-gold),transparent); }
+    .frag-tags { display:flex; flex-wrap:wrap; gap:10px; }
+    .frag-tag {
+      padding:8px 20px; border:1px solid var(--border); border-radius:999px;
+      font-size:0.75rem; color:var(--white-dim); transition:all .3s; cursor:default;
+      background:rgba(13,21,64,0.5); backdrop-filter:blur(8px);
+    }
+    .frag-tag:hover { border-color:var(--gold); color:var(--white); background:rgba(245,200,66,0.08); }
+
+    /* ============================================================
+       GALLERY — Sticker cards
+       To add a sticker: copy one .sticker-card block
+       data-type must be: "rollie", "solie", or "slidder"
+    ============================================================ */
+    .sticker-filter { display:flex; gap:10px; margin-bottom:40px; flex-wrap:wrap; }
+    .filter-btn {
+      padding:9px 24px; background:rgba(13,21,64,0.5); border:1px solid var(--border);
+      border-radius:999px; color:var(--white-dim);
+      font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase;
+      cursor:none; transition:all .3s; backdrop-filter:blur(8px);
+    }
+    .filter-btn:hover { border-color:var(--gold); color:var(--white); }
+    .filter-btn.active { background:var(--gold); border-color:var(--gold); color:#05091a; font-weight:700; }
+    .sticker-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px; }
+    .sticker-card {
+      background:rgba(13,21,64,0.7); border:1px solid var(--border); border-radius:16px;
+      aspect-ratio:3/4; display:flex; flex-direction:column; align-items:center; justify-content:flex-end;
+      padding:24px; position:relative; overflow:hidden; transition:all .4s; cursor:none;
+      backdrop-filter:blur(12px);
+    }
+    .sticker-card:hover { border-color:var(--gold); transform:translateY(-6px) scale(1.02); box-shadow:0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(245,200,66,0.1); }
+    .sticker-bg { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:5rem; opacity:0.12; user-select:none; }
+    .sticker-glow {
+      position:absolute; inset:0; border-radius:16px;
+      background:radial-gradient(ellipse at 50% 30%, rgba(61,82,204,0.2), transparent 70%);
+    }
+    .sticker-badge {
+      font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.25em; text-transform:uppercase;
+      color:var(--gold); margin-bottom:8px; position:relative;
+    }
+    .sticker-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; text-align:center; position:relative; }
+    .sticker-type { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; color:var(--white-dim); margin-top:6px; position:relative; }
+
+    /* ============================================================
+       ABOUT PAGE
+    ============================================================ */
+    .about-layout { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; }
+    .about-visual {
+      aspect-ratio:3/4; border:1px solid var(--border-gold); border-radius:20px;
+      position:relative; overflow:hidden;
+      background:linear-gradient(135deg, #0d1540 0%, #1a2f8a 50%, #0a1033 100%);
+    }
+    .about-visual-inner {
+      position:absolute; inset:0;
+      background:
+        radial-gradient(ellipse at 30% 40%, rgba(245,200,66,0.12), transparent 60%),
+        radial-gradient(ellipse at 70% 70%, rgba(61,82,204,0.3), transparent 55%);
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+    }
+    .about-visual-text {
+      font-family:'Playfair Display',serif;
+      font-size:clamp(3rem,6vw,6rem); font-weight:900; font-style:italic;
+      color:var(--gold); opacity:0.2; text-align:center; line-height:1;
+    }
+    .about-visual-stars { position:absolute; inset:0; }
+    .about-star {
+      position:absolute; background:var(--gold); border-radius:50%;
+      animation:twinkle 3s ease-in-out infinite;
+    }
+    .s1 { width:3px;height:3px;top:15%;left:20%;animation-delay:0s; }
+    .s2 { width:2px;height:2px;top:30%;right:25%;animation-delay:.5s; }
+    .s3 { width:4px;height:4px;top:60%;left:15%;animation-delay:1s; }
+    .s4 { width:2px;height:2px;bottom:20%;right:20%;animation-delay:1.5s; }
+    .s5 { width:3px;height:3px;top:45%;left:55%;animation-delay:2s; }
+    .about-text p { font-size:0.88rem; line-height:2; color:var(--white-dim); margin-bottom:24px; }
+    .about-text p strong { color:var(--white); font-weight:600; }
+    .about-values { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:40px; }
+    .value-item {
+      padding:24px; border:1px solid var(--border); border-radius:12px;
+      background:rgba(13,21,64,0.6); backdrop-filter:blur(8px); transition:all .3s;
+    }
+    .value-item:hover { border-color:var(--border-gold); }
+    .value-icon { font-size:1.4rem; margin-bottom:10px; }
+    .value-label { font-family:'Space Grotesk',sans-serif; font-size:0.78rem; font-weight:700; letter-spacing:0.08em; color:var(--gold); margin-bottom:6px; }
+    .value-desc { font-size:0.72rem; color:var(--white-dim); line-height:1.7; }
+
+    /* ============================================================
+       CONTACT / ORDER PAGE
+    ============================================================ */
+    .contact-layout { display:grid; grid-template-columns:1fr 1.5fr; gap:60px; }
+    .contact-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--gold); margin-bottom:10px; margin-top:36px; }
+    .contact-label:first-child { margin-top:0; }
+    .contact-value { font-size:0.9rem; color:var(--white); }
+    .contact-value a { color:var(--white); text-decoration:none; border-bottom:1px solid var(--border-gold); transition:border-color .3s; }
+    .contact-value a:hover { border-color:var(--gold); }
+    .order-steps { margin-top:36px; }
+    .order-step { display:flex; gap:18px; align-items:flex-start; margin-bottom:24px; }
+    .step-num {
+      width:34px; height:34px; flex-shrink:0;
+      background:rgba(245,200,66,0.1); border:1px solid var(--border-gold); border-radius:8px;
+      display:flex; align-items:center; justify-content:center;
+      font-family:'DM Mono',monospace; font-size:0.7rem; font-weight:600; color:var(--gold);
+    }
+    .step-text { font-size:0.8rem; color:var(--white-dim); line-height:1.8; padding-top:7px; }
+    .step-text strong { color:var(--white); }
+    /* Order form box */
+    .order-box {
+      background:rgba(10,16,51,0.8); border:1px solid var(--border);
+      border-radius:20px; padding:40px; backdrop-filter:blur(20px);
+    }
+    .order-box-title { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; margin-bottom:8px; }
+    .order-box-sub { font-size:0.77rem; color:var(--white-dim); margin-bottom:32px; line-height:1.7; }
+    .form-group { margin-bottom:20px; }
+    .form-label { display:block; font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--gold); margin-bottom:8px; }
+    .form-input,.form-select,.form-textarea {
+      width:100%; padding:12px 16px;
+      background:rgba(13,21,64,0.7); border:1px solid var(--border);
+      border-radius:10px; color:var(--white); font-family:'Space Grotesk',sans-serif;
+      font-size:0.82rem; outline:none; transition:border-color .3s; appearance:none;
+      backdrop-filter:blur(8px);
+    }
+    .form-input:focus,.form-select:focus,.form-textarea:focus { border-color:var(--gold); }
+    .form-textarea { resize:vertical; min-height:90px; }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    /* WhatsApp button */
+    .whatsapp-btn {
+      display:flex; align-items:center; justify-content:center; gap:10px;
+      width:100%; padding:14px; background:rgba(37,99,65,0.8);
+      border:1px solid rgba(74,177,122,0.4); border-radius:10px;
+      color:var(--white); font-family:'Space Grotesk',sans-serif;
+      font-size:0.72rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase;
+      cursor:none; text-decoration:none; transition:all .3s; margin-top:12px;
+    }
+    .whatsapp-btn:hover { background:rgba(37,99,65,1); }
+    .divider { display:flex; align-items:center; gap:12px; font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.2em; color:var(--white-dim); margin:16px 0; }
+    .divider::before,.divider::after { content:''; flex:1; height:1px; background:var(--border); }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    footer {
+      padding:60px 8% 40px; border-top:1px solid var(--border);
+      display:grid; grid-template-columns:2fr 1fr 1fr; gap:60px;
+      position:relative; z-index:2;
+      background:rgba(5,9,26,0.6); backdrop-filter:blur(20px);
+    }
+    .footer-brand { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; color:var(--white); margin-bottom:12px; }
+    .footer-brand span { color:var(--gold); font-style:italic; }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--white-dim); letter-spacing:0.1em; font-style:italic; }
+    .footer-col-title { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.25em; color:var(--gold); margin-bottom:20px; text-transform:uppercase; }
+    .footer-links { list-style:none; }
+    .footer-links li { margin-bottom:10px; }
+    .footer-links a { font-size:0.78rem; color:var(--white-dim); text-decoration:none; cursor:none; transition:color .3s; }
+    .footer-links a:hover { color:var(--gold); }
+    .footer-bottom {
+      padding:24px 8%; border-top:1px solid rgba(61,82,204,0.15);
+      display:flex; justify-content:space-between; align-items:center;
+      position:relative; z-index:2;
+    }
+    .footer-copy { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--white-dim); letter-spacing:0.08em; }
+
+    /* ============================================================
+       MOBILE RESPONSIVE
+    ============================================================ */
+    @media (max-width:768px) {
+      nav { padding:16px 5%; }
+      .nav-links { display:none; }
+      .hamburger { display:flex; }
+      .section-pad { padding:70px 5%; }
+      .about-layout { grid-template-columns:1fr; gap:40px; }
+      .about-visual { aspect-ratio:16/9; }
+      .contact-layout { grid-template-columns:1fr; gap:36px; }
+      footer { grid-template-columns:1fr; gap:32px; }
+      .footer-bottom { flex-direction:column; gap:10px; text-align:center; }
+      .form-row { grid-template-columns:1fr; }
+      .order-box { padding:24px; }
+      .about-values { grid-template-columns:1fr; }
+      .hero-product-float { display:none; }
+      .price-strip { flex-direction:column; }
+    }
+
+    /* ============================================================
+       MOBILE MENU
+    ============================================================ */
+    .mobile-menu-overlay {
+      display:none; position:fixed; inset:0; top:70px;
+      background:rgba(5,9,26,0.97); z-index:998;
+      flex-direction:column; padding:48px 8%; gap:28px;
+      backdrop-filter:blur(20px);
+    }
+    .mobile-menu-overlay.open { display:flex; }
+    .mobile-menu-overlay a {
+      color:var(--white-dim); text-decoration:none;
+      font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700;
+      border-bottom:1px solid var(--border); padding-bottom:18px; transition:color .3s;
+    }
+    .mobile-menu-overlay a:hover { color:var(--gold); }
+
+    /* ============================================================
+       SCROLL HINT
+    ============================================================ */
+    .scroll-hint {
+      position:absolute; bottom:36px; left:8%; z-index:2;
+      display:flex; align-items:center; gap:10px;
+      font-family:'DM Mono',monospace; font-size:0.58rem;
+      letter-spacing:0.25em; text-transform:uppercase; color:var(--white-dim);
+    }
+    .scroll-dot { width:6px; height:6px; background:var(--gold); border-radius:50%; animation:blink 1.5s infinite; }
+
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       STARRY NIGHT BACKGROUND — CSS animated background
+       Inspired by Van Gogh + your product aesthetic
+  ============================================================ -->
+  <div class="starry-bg">
+    <div class="swirl swirl-1"></div>
+    <div class="swirl swirl-2"></div>
+    <div class="swirl swirl-3"></div>
+    <div class="swirl swirl-4"></div>
+    <div class="swirl swirl-5"></div>
+    <div class="stars-layer"></div>
+    <div class="swirl-lines"></div>
+    <div class="moon"></div>
+  </div>
+
+  <!-- ============================================================
+       CUSTOM CURSOR
+  ============================================================ -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- ============================================================
+       NAVIGATION
+       To add a page: copy one <li>, update name + page id
+  ============================================================ -->
+  <nav>
+    <a href="#" class="nav-logo" onclick="showPage('home')">on<span>to</span>you</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#" onclick="showPage('home')" class="active" id="nav-home">Home</a></li>
+      <li><a href="#" onclick="showPage('shop')" id="nav-shop">Shop</a></li>
+      <li><a href="#" onclick="showPage('gallery')" id="nav-gallery">Gallery</a></li>
+      <li><a href="#" onclick="showPage('about')" id="nav-about">About</a></li>
+      <li><a href="#" onclick="showPage('contact')" id="nav-contact">Order</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu-overlay" id="mobileMenu">
+    <a href="#" onclick="showPage('home');toggleMenu()">Home</a>
+    <a href="#" onclick="showPage('shop');toggleMenu()">Shop</a>
+    <a href="#" onclick="showPage('gallery');toggleMenu()">Gallery</a>
+    <a href="#" onclick="showPage('about');toggleMenu()">About</a>
+    <a href="#" onclick="showPage('contact');toggleMenu()">Order</a>
+  </div>
+
+
+  <!-- ============================================================
+       PAGE 1 — HOME
+  ============================================================ -->
+  <section class="page active" id="home">
+
+    <div class="hero-content" style="padding-top:80px;">
+
+      <!-- Gen Z pill tag — Change text here -->
+      <div class="hero-tag">
+        <div class="hero-tag-dot"></div>
+        Handcrafted Solid Perfume
+      </div>
+
+      <!-- Main title — Change text here -->
+      <h1 class="hero-title">
+        <span class="t1">On To</span>
+        <span class="t2">You.</span>
+        <span class="t3">✦ Fragrance · Anytime · Anywhere ✦</span>
+      </h1>
+
+      <!-- Hero buttons -->
+      <div class="hero-btns" style="margin-top:44px;">
+        <a href="#" class="btn-primary" onclick="showPage('shop')"><span>Explore Shop ✦</span></a>
+        <a href="#" class="btn-outline" onclick="showPage('gallery')">View Gallery</a>
+      </div>
+    </div>
+
+    <!-- Floating product visual (right side) -->
+    <div class="hero-product-float">
+      <div class="hero-product-box">
+        <div class="hero-product-price-tag">₹75–₹150</div>
+        <div class="hero-product-swirl">🌌</div>
+        <div class="hero-product-name">Solid<br>Perfume</div>
+        <div class="hero-product-sub">✦ on to you ✦</div>
+      </div>
+    </div>
+
+    <!-- Scroll hint -->
+    <div class="scroll-hint">
+      <div class="scroll-dot"></div>
+      <span>Scroll</span>
+    </div>
+
+    <!-- ── HOME — Price strip cards ──
+         To add a 4th product: copy one .price-chip -->
+    <div class="price-strip">
+
+      <!-- PRICE CARD 1 — ROLLIES -->
+      <div class="price-chip">
+        <div class="price-chip-label">Rollies</div>
+        <div class="price-chip-price">₹75</div>
+        <div class="price-chip-weight">15 gm</div>
+      </div>
+
+      <!-- PRICE CARD 2 — SOLIES -->
+      <div class="price-chip">
+        <div class="price-chip-label">Solies</div>
+        <div class="price-chip-price">₹150</div>
+        <div class="price-chip-weight">30 gm</div>
+      </div>
+
+      <!-- PRICE CARD 3 — SLIDDERS -->
+      <div class="price-chip">
+        <div class="price-chip-label">Slidders</div>
+        <div class="price-chip-price">₹100</div>
+        <div class="price-chip-weight">15 gm</div>
+      </div>
+
+    </div>
+  </section>
+  <!-- END HOME PAGE -->
+
+
+  <!-- ============================================================
+       PAGE 2 — SHOP
+  ============================================================ -->
+  <section class="page" id="shop">
+    <div class="section-pad">
+
+      <div class="mono-tag">✦ our collection</div>
+      <div class="gold-line"></div>
+      <!-- Heading — Change here -->
+      <h2 class="section-title">Our <span>Products</span></h2>
+      <p class="section-subtitle">Compact, spill-proof solid perfumes crafted with natural oils and butters. Choose your style, choose your scent.</p>
+
+      <!-- Shop tabs — To add a new tab: add button + matching tab-content below -->
+      <div class="product-tabs">
+        <button class="tab-btn active" onclick="showTab('rollies',this)">Rollies</button>
+        <button class="tab-btn" onclick="showTab('solies',this)">Solies</button>
+        <button class="tab-btn" onclick="showTab('slidders',this)">Slidders</button>
+        <button class="tab-btn" onclick="showTab('fragrances',this)">Scents</button>
+      </div>
+
+
+      <!-- ── TAB: ROLLIES ──
+           To add a product: copy one .product-card block -->
+      <div class="tab-content active" id="tab-rollies">
+        <div class="product-grid">
+
+          <!-- ROLLIE PRODUCT 1 — Humans -->
+          <div class="product-card">
+            <div class="product-img-wrap">
+              <!-- PRODUCT IMAGE: Replace div below with:
+                   <img src="filename.jpg" style="width:100%;height:100%;object-fit:cover;">
+                   Put image file in the same folder as index.html -->
+              <div class="product-placeholder">👽</div>
+            </div>
+            <div class="product-info">
+              <div class="product-name">Rolies [ Humans ]</div>
+              <div class="product-desc">Street Art Series. Urban art meets everyday care. Bold alien artwork on a sleek roll-on tube. Natural oils and butters.</div>
+              <div class="product-meta">
+                <div class="product-price">₹75</div>  <!-- PRICE: Change here -->
+                <div class="product-weight">15 gm</div>  <!-- WEIGHT: Change here -->
+              </div>
+            </div>
+          </div>
+
+          <!-- ROLLIE PRODUCT 2 — Bro Chill -->
+          <div class="product-card">
+            <div class="product-img-wrap">
+              <div class="product-placeholder">🧘</div>
+            </div>
+            <div class="product-info">
+              <div class="product-name">Rolies [ Bro Chill ]</div>
+              <div class="product-desc">Street Art Series. Buddha meets street culture. A roll-on that screams calm and confidence. Natural fragrance, bold design.</div>
+              <div class="product-meta">
+                <div class="product-price">₹75</div>
+                <div class="product-weight">15 gm</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ROLLIE PRODUCT 3 — World Crazy -->
+          <div class="product-card">
+            <div class="product-img-wrap">
+              <div class="product-placeholder">🌍</div>
+            </div>
+            <div class="product-info">
+              <div class="product-name">Rolies [ World Crazy ]</div>
+              <div class="product-desc">Street Art Series. Vibrant, psychedelic energy in a pocket-sized roll-on. For those who live loud and smell incredible.</div>
+              <div class="product-meta">
+                <div class="product-price">₹75</div>
+                <div class="product-weight">15 gm</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <!-- END ROLLIES TAB -->
+
+
+      <!-- ── TAB: SOLIES ──
+           To add a product: copy one .product-card block -->
+      <div class="tab-content" id="tab-solies">
+        <div class="product-grid">
+
+          <!-- SOLIE PRODUCT 1 -->
+          <div class="product-card">
+            <div class="product-img-wrap">
+              <!-- PRODUCT IMAGE: Replace with <img> tag when ready -->
+              <div class="product-placeholder">🎨</div>
+            </div>
+            <div class="product-info">
+              <div class="product-name">Solies [ Mantally Challenged? ]</div>
+              <div class="product-desc">Limited Edition Art Series. Collectible tin with bold monochrome illustration. Hand-poured with natural waxes and oils.</div>
+              <div class="product-meta">
+                <div class="product-price">₹150</div>
+                <div class="product-weight">30 gm</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SOLIE PRODUCT 2 — placeholder -->
+          <div class="product-card">
+            <div class="product-img-wrap">
+              <div class="product-placeholder">✨</div>
+            </div>
+            <div class="product-info">
+              <div class="product-name">Solies [ More Designs Coming ]</div>
+              <div class="product-desc">New Art Series editions dropping soon. Same premium solid perfume formula, fresh new collectible designs.</div>
+              <div class="product-meta">
+                <div class="product-price">₹150</div>
+                <div class="product-weight">30 gm</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <!-- END SOLIES TAB -->
+
+
+      <!-- ── TAB: SLIDDERS ──
+           To add a product: copy one .product-card block -->
+      <div class="tab-content" id="tab-slidders">
+        <div class="product-grid">
+
+          <!-- SLIDDER PRODUCT 1 — Arrows -->
+          <div class="product-card">
+            <div class="product-img-wrap">
+              <!-- PRODUCT IMAGE: Replace with <img> tag when ready -->
+              <div class="product-placeholder">⚡</div>
+            </div>
+            <div class="product-info">
+              <div class="product-name">Slidders [ Arrows ]</div>
+              <div class="product-desc">Street Art Series. Striking lightning artwork. Raw energy, fearless individuality. Solid perfume in a sleek pocket slider.</div>
+              <div class="product-meta">
+                <div class="product-price">₹100</div>
+                <div class="product-weight">15 gm</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SLIDDER PRODUCT 2 — Couple -->
+          <div class="product-card">
+            <div class="product-img-wrap">
+              <div class="product-placeholder">💙</div>
+            </div>
+            <div class="product-info">
+              <div class="product-name">Slidders [ Couple ]</div>
+              <div class="product-desc">Beautiful couple silhouette in glowing blue. For those who carry love wherever they go.</div>
+              <div class="product-meta">
+                <div class="product-price">₹100</div>
+                <div class="product-weight">15 gm</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SLIDDER PRODUCT 3 — Real Men -->
+          <div class="product-card">
+            <div class="product-img-wrap">
+              <div class="product-placeholder">🖤</div>
+            </div>
+            <div class="product-info">
+              <div class="product-name">Slidders [ Real Men ]</div>
+              <div class="product-desc">Bold typography with attitude. A statement slider for those who set trends, not follow them.</div>
+              <div class="product-meta">
+                <div class="product-price">₹100</div>
+                <div class="product-weight">15 gm</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <!-- END SLIDDERS TAB -->
+
+
+      <!-- ── TAB: FRAGRANCES ──
+           To add fragrance: add <div class="frag-tag">Name</div>
+           To add category: copy an entire <div> block -->
+      <div class="tab-content" id="tab-fragrances">
+        <p style="font-size:0.85rem;color:var(--white-dim);line-height:2;max-width:520px;margin-bottom:48px;">We blend the best of both worlds — something novel and exciting, yet familiar and comforting. All fragrances are available across all product types.</p>
+
+        <div class="fragrance-categories">
+
+          <!-- FRAGRANCE CATEGORY 1 — WARM -->
+          <div>
+            <div class="frag-cat-label">✦ Warm</div>
+            <div class="frag-tags">
+              <div class="frag-tag">Vanilla Bliss</div>
+              <div class="frag-tag">Rose Elegance</div>
+              <div class="frag-tag">Chocolate Delight</div>
+              <div class="frag-tag">Coffee Aura</div>
+            </div>
+          </div>
+
+          <!-- FRAGRANCE CATEGORY 2 — CITRIC -->
+          <div>
+            <div class="frag-cat-label">✦ Citric</div>
+            <div class="frag-tags">
+              <div class="frag-tag">Blueberry Bliss</div>
+              <div class="frag-tag">Peach Serenity</div>
+              <div class="frag-tag">Lemon Zest</div>
+              <div class="frag-tag">Pineapple Paradise</div>
+            </div>
+          </div>
+
+          <!-- FRAGRANCE CATEGORY 3 — COMBO -->
+          <div>
+            <div class="frag-cat-label">✦ Combo</div>
+            <div class="frag-tags">
+              <div class="frag-tag">CoCoXVanilla Harmony</div>
+              <div class="frag-tag">FreshLemonXCoffee Fusion</div>
+              <div class="frag-tag">ChocolateXBlueBerries Indulgence</div>
+              <div class="frag-tag">VanillaXRose Charm</div>
+              <div class="frag-tag">PineappleXCoffee Fusion</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Featured scent box — Change name + description here -->
+        <div style="margin-top:48px;padding:28px;border:1px solid var(--border-gold);border-radius:16px;background:rgba(13,21,64,0.6);max-width:480px;backdrop-filter:blur(12px);">
+          <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.3em;color:var(--gold);margin-bottom:12px;">VANILLA BLISS — FEATURED SCENT</div>
+          <p style="font-size:0.82rem;color:var(--white-dim);line-height:1.9;">Warm, comforting, effortlessly elegant. Opens with soft gourmand sweetness, settles into a rich velvety heart. Made for daily wear — subtle charm with lasting presence.</p>
+        </div>
+      </div>
+      <!-- END FRAGRANCES TAB -->
+
+    </div>
+  </section>
+  <!-- END SHOP PAGE -->
+
+
+  <!-- ============================================================
+       PAGE 3 — GALLERY
+  ============================================================ -->
+  <section class="page" id="gallery">
+    <div class="section-pad">
+
+      <div class="mono-tag">✦ sticker collection</div>
+      <div class="gold-line"></div>
+      <h2 class="section-title">Sticker <span>Gallery</span></h2>
+      <!-- Gallery intro — Change here -->
+      <p class="section-subtitle" style="font-style:italic;">"A hand-picked collection of stickers to kickstart your hustle." — First, choose your sticker. Then, pick your fragrance.</p>
+
+      <!-- Filter buttons — Add new if you add a new product type -->
+      <div class="sticker-filter">
+        <button class="filter-btn active" onclick="filterStickers('all',this)">All ✦</button>
+        <button class="filter-btn" onclick="filterStickers('rollie',this)">Rollies</button>
+        <button class="filter-btn" onclick="filterStickers('solie',this)">Solies</button>
+        <button class="filter-btn" onclick="filterStickers('slidder',this)">Slidders</button>
+      </div>
+
+      <!-- Sticker cards grid
+           To add a sticker: copy one .sticker-card block
+           data-type must be: "rollie", "solie", or "slidder" -->
+      <div class="sticker-grid" id="stickerGrid">
+
+        <!-- STICKER 1 — Rollie: Humans -->
+        <div class="sticker-card" data-type="rollie">
+          <div class="sticker-bg">👽</div>
+          <div class="sticker-glow"></div>
+          <div class="sticker-badge">✦ Rollies</div>
+          <div class="sticker-name">Humans</div>
+          <div class="sticker-type">Street Art · ₹75</div>
+        </div>
+
+        <!-- STICKER 2 — Rollie: Bro Chill -->
+        <div class="sticker-card" data-type="rollie">
+          <div class="sticker-bg">🧘</div>
+          <div class="sticker-glow"></div>
+          <div class="sticker-badge">✦ Rollies</div>
+          <div class="sticker-name">Bro Chill</div>
+          <div class="sticker-type">Street Art · ₹75</div>
+        </div>
+
+        <!-- STICKER 3 — Rollie: World Crazy -->
+        <div class="sticker-card" data-type="rollie">
+          <div class="sticker-bg">🌍</div>
+          <div class="sticker-glow"></div>
+          <div class="sticker-badge">✦ Rollies</div>
+          <div class="sticker-name">World Crazy</div>
+          <div class="sticker-type">Street Art · ₹75</div>
+        </div>
+
+        <!-- STICKER 4 — Solie: Mantally Challenged -->
+        <div class="sticker-card" data-type="solie">
+          <div class="sticker-bg">🎨</div>
+          <div class="sticker-glow"></div>
+          <div class="sticker-badge">✦ Solies</div>
+          <div class="sticker-name">Mantally Challenged?</div>
+          <div class="sticker-type">Limited Art Series · ₹150</div>
+        </div>
+
+        <!-- STICKER 5 — Slidder: Arrows -->
+        <div class="sticker-card" data-type="slidder">
+          <div class="sticker-bg">⚡</div>
+          <div class="sticker-glow"></div>
+          <div class="sticker-badge">✦ Slidders</div>
+          <div class="sticker-name">Arrows</div>
+          <div class="sticker-type">Street Art · ₹100</div>
+        </div>
+
+        <!-- STICKER 6 — Slidder: Couple -->
+        <div class="sticker-card" data-type="slidder">
+          <div class="sticker-bg">💙</div>
+          <div class="sticker-glow"></div>
+          <div class="sticker-badge">✦ Slidders</div>
+          <div class="sticker-name">Couple</div>
+          <div class="sticker-type">Street Art · ₹100</div>
+        </div>
+
+        <!-- STICKER 7 — Slidder: Real Men -->
+        <div class="sticker-card" data-type="slidder">
+          <div class="sticker-bg">🖤</div>
+          <div class="sticker-glow"></div>
+          <div class="sticker-badge">✦ Slidders</div>
+          <div class="sticker-name">Real Men</div>
+          <div class="sticker-type">Street Art · ₹100</div>
+        </div>
+
+      </div>
+      <!-- END sticker grid -->
+
+      <div style="margin-top:52px;text-align:center;">
+        <a href="#" class="btn-primary" onclick="showPage('contact')"><span>Order Your Favourite ✦</span></a>
+      </div>
+
+    </div>
+  </section>
+  <!-- END GALLERY PAGE -->
+
+
+  <!-- ============================================================
+       PAGE 4 — ABOUT
+  ============================================================ -->
+  <section class="page" id="about">
+    <div class="section-pad">
+
+      <div class="mono-tag">✦ our story</div>
+      <div class="gold-line"></div>
+      <h2 class="section-title">About <span>Us</span></h2>
+      <p class="section-subtitle">A passionate team driven by fragrance, individuality, and style.</p>
+
+      <div class="about-layout">
+
+        <!-- Left: decorative visual box -->
+        <div class="about-visual">
+          <div class="about-visual-stars">
+            <div class="about-star s1"></div>
+            <div class="about-star s2"></div>
+            <div class="about-star s3"></div>
+            <div class="about-star s4"></div>
+            <div class="about-star s5"></div>
+          </div>
+          <div class="about-visual-inner">
+            <div class="about-visual-text">ON<br>TO<br>YOU</div>
+          </div>
+        </div>
+
+        <!-- Right: About text — Change paragraphs here -->
+        <div class="about-text">
+
+          <!-- ABOUT PARAGRAPH 1 -->
+          <p>At <strong>On To You</strong>, we are a passionate team driven by the vision of transforming everyday experiences through the power of fragrance. Our mission is to craft <strong>unique solid perfumes</strong> that are not only convenient and long-lasting but also reflect individuality and style.</p>
+
+          <!-- ABOUT PARAGRAPH 2 -->
+          <p>We believe that fragrance is more than just a scent — it's a personal story, a memory, and an emotion that stays with you throughout the day. Thoughtfully designed for <strong>modern lifestyles</strong>, blending elegance with practicality.</p>
+
+          <!-- ABOUT PARAGRAPH 3 -->
+          <p>Unlike traditional perfumes, our solid perfumes are compact, spill-proof, and easy to carry — the perfect companion for people who are always on the go.</p>
+
+          <!-- ABOUT PARAGRAPH 4 -->
+          <p>Our focus is on <strong>quality, creativity, and sustainability</strong>. With On To You — you don't just wear a fragrance. You <strong>carry an aura</strong>.</p>
+
+          <!-- VALUE BOXES — Change icon, title, description for each -->
+          <div class="about-values">
+            <div class="value-item">
+              <div class="value-icon">🌿</div>
+              <div class="value-label">Natural</div>
+              <div class="value-desc">Natural oils, waxes, and butters. Gentle on skin, powerful in scent.</div>
+            </div>
+            <div class="value-item">
+              <div class="value-icon">🎨</div>
+              <div class="value-label">Artistic</div>
+              <div class="value-desc">Every tin is a collectible work of street art and culture.</div>
+            </div>
+            <div class="value-item">
+              <div class="value-icon">⚡</div>
+              <div class="value-label">Portable</div>
+              <div class="value-desc">Pocket-sized and spill-proof. Your fragrance, your terms.</div>
+            </div>
+            <div class="value-item">
+              <div class="value-icon">✨</div>
+              <div class="value-label">Accessible</div>
+              <div class="value-desc">Premium experience at a price that never compromises quality.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  <!-- END ABOUT PAGE -->
+
+
+  <!-- ============================================================
+       PAGE 5 — CONTACT / ORDER
+  ============================================================ -->
+  <section class="page" id="contact">
+    <div class="section-pad">
+
+      <div class="mono-tag">✦ place your order</div>
+      <div class="gold-line"></div>
+      <h2 class="section-title">Order <span>Now</span></h2>
+      <p class="section-subtitle">Simple, personal ordering. No complicated checkout — just reach out and we'll take care of you.</p>
+
+      <div class="contact-layout">
+
+        <!-- Left: contact info + steps -->
+        <div class="contact-info">
+
+          <!-- CONTACT EMAIL — Change email here -->
+          <div class="contact-label">Email</div>
+          <div class="contact-value">
+            <a href="mailto:minimiragee@gmail.com">minimiragee@gmail.com</a>
+          </div>
+
+          <!-- WHATSAPP — Change number here
+               Format: country code + number, no spaces or +
+               Example: +91 98765 43210 → 919876543210 -->
+          <div class="contact-label">WhatsApp</div>
+          <div class="contact-value">
+            <a href="https://wa.me/91XXXXXXXXXX" target="_blank">+91 XXXXX XXXXX</a>
+          </div>
+
+          <!-- ORDER STEPS — Change step text here -->
+          <div class="contact-label">How It Works</div>
+          <div class="order-steps">
+            <div class="order-step">
+              <div class="step-num">01</div>
+              <div class="step-text"><strong>Pick your sticker design</strong> from the Gallery</div>
+            </div>
+            <div class="order-step">
+              <div class="step-num">02</div>
+              <div class="step-text"><strong>Choose your fragrance</strong> — Warm, Citric, or Combo</div>
+            </div>
+            <div class="order-step">
+              <div class="step-num">03</div>
+              <div class="step-text"><strong>Select your quantity</strong></div>
+            </div>
+            <div class="order-step">
+              <div class="step-num">04</div>
+              <div class="step-text"><strong>DM us</strong> on WhatsApp or email: sticker, fragrance, qty, address + payment details</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right: order builder -->
+        <div class="order-box">
+          <div class="order-box-title">Build Your Order ✦</div>
+          <div class="order-box-sub">Fill in your vibe, then hit WhatsApp or email to confirm and pay.</div>
+
+          <!-- PRODUCT TYPE — Update options if you add new products -->
+          <div class="form-group">
+            <label class="form-label">Product Type</label>
+            <select class="form-select" id="productType" onchange="updateStickers()">
+              <option value="">Select product...</option>
+              <option value="rollie">Rollies — ₹75 / 15gm</option>
+              <option value="solie">Solies — ₹150 / 30gm</option>
+              <option value="slidder">Slidders — ₹100 / 15gm</option>
+            </select>
+          </div>
+
+          <!-- STICKER DESIGN — Auto-filled by JavaScript -->
+          <div class="form-group">
+            <label class="form-label">Sticker Design</label>
+            <select class="form-select" id="stickerDesign">
+              <option value="">Select product type first...</option>
+            </select>
+          </div>
+
+          <!-- FRAGRANCE — Add/remove <option> lines to match your menu -->
+          <div class="form-group">
+            <label class="form-label">Fragrance</label>
+            <select class="form-select" id="fragrance">
+              <option value="">Select fragrance...</option>
+              <optgroup label="✦ Warm">
+                <option>Vanilla Bliss</option>
+                <option>Rose Elegance</option>
+                <option>Chocolate Delight</option>
+                <option>Coffee Aura</option>
+              </optgroup>
+              <optgroup label="✦ Citric">
+                <option>Blueberry Bliss</option>
+                <option>Peach Serenity</option>
+                <option>Lemon Zest</option>
+                <option>Pineapple Paradise</option>
+              </optgroup>
+              <optgroup label="✦ Combo">
+                <option>CoCoXVanilla Harmony</option>
+                <option>FreshLemonXCoffee Fusion</option>
+                <option>ChocolateXBlueBerries Indulgence</option>
+                <option>VanillaXRose Charm</option>
+                <option>PineappleXCoffee Fusion</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Quantity</label>
+              <input type="number" class="form-input" id="qty" min="1" value="1"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Your Name</label>
+              <input type="text" class="form-input" id="custName" placeholder="Name"/>
+            </div>
+          </div>
+
+          <!-- Auto order summary — No change needed -->
+          <div class="form-group">
+            <label class="form-label">Order Summary</label>
+            <div style="padding:12px 16px;font-size:0.8rem;color:var(--white-dim);min-height:72px;background:rgba(13,21,64,0.7);border:1px solid var(--border);border-radius:10px;" id="orderSummary">Fill the fields above to see your order summary.</div>
+          </div>
+
+          <!-- WhatsApp & Email buttons — Numbers set in JavaScript below -->
+          <a href="#" class="whatsapp-btn" onclick="openWhatsApp()">
+            <span>📱</span><span>Send via WhatsApp</span>
+          </a>
+          <div class="divider">or</div>
+          <a href="#" class="btn-primary" style="display:block;text-align:center;width:100%;" onclick="openEmail()">
+            <span>📧 &nbsp;Send via Email</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  <!-- END CONTACT PAGE -->
+
+
+  <!-- ============================================================
+       FOOTER — Change brand name, tagline, email here
+  ============================================================ -->
+  <footer>
+    <div>
+      <div class="footer-brand">on<span>to</span>you</div>
+      <div class="footer-tagline">"Fragrance, Anytime. Anywhere." ✦</div>
+    </div>
+    <div>
+      <div class="footer-col-title">Navigate</div>
+      <ul class="footer-links">
+        <li><a href="#" onclick="showPage('home')">Home</a></li>
+        <li><a href="#" onclick="showPage('shop')">Shop</a></li>
+        <li><a href="#" onclick="showPage('gallery')">Gallery</a></li>
+        <li><a href="#" onclick="showPage('about')">About</a></li>
+        <li><a href="#" onclick="showPage('contact')">Order</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Contact</div>
+      <ul class="footer-links">
+        <!-- FOOTER EMAIL — Change here -->
+        <li><a href="mailto:minimiragee@gmail.com">minimiragee@gmail.com</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <!-- Footer bottom bar — Change year/text here -->
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 On To You. All rights reserved.</div>
+    <div class="footer-copy">Solid Perfume ✦ Handcrafted ✦ India</div>
+  </div>
+
+
+  <!-- ============================================================
+       JAVASCRIPT
+  ============================================================ -->
+  <script>
+
+    // ============================================================
+    // CUSTOM CURSOR
+    // ============================================================
+    const cursor = document.getElementById('cursor');
+    const cursorRing = document.getElementById('cursorRing');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+      setTimeout(() => {
+        cursorRing.style.left = e.clientX + 'px';
+        cursorRing.style.top = e.clientY + 'px';
+      }, 80);
+    });
+
+    // ============================================================
+    // PAGE NAVIGATION
+    // ============================================================
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+      const navEl = document.getElementById('nav-' + id);
+      if (navEl) navEl.classList.add('active');
+      window.scrollTo(0, 0);
+      return false;
+    }
+
+    // ============================================================
+    // MOBILE MENU
+    // ============================================================
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+    }
+
+    // ============================================================
+    // SHOP TABS
+    // ============================================================
+    function showTab(id, btn) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + id).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    // ============================================================
+    // GALLERY FILTER
+    // ============================================================
+    function filterStickers(type, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.sticker-card').forEach(c => {
+        c.style.display = (type === 'all' || c.dataset.type === type) ? 'flex' : 'none';
+      });
+    }
+
+    // ============================================================
+    // ORDER FORM — Sticker designs per product type
+    // To add a sticker: add it to the correct array below
+    // ============================================================
+    const stickers = {
+      rollie:  ['Humans', 'Bro Chill', 'World Crazy'],
+      solie:   ['Mantally Challenged?'],
+      slidder: ['Arrows', 'Couple', 'Real Men']
+    };
+
+    // ============================================================
+    // ORDER FORM — Prices (change numbers to update calculations)
+    // ============================================================
+    const prices = { rollie: 75, solie: 150, slidder: 100 };
+
+    // ============================================================
+    // ORDER FORM — Display names
+    // ============================================================
+    const names = { rollie: 'Rollies', solie: 'Solies', slidder: 'Slidders' };
+
+    // ============================================================
+    // ORDER FORM — Auto-fill sticker dropdown
+    // ============================================================
+    function updateStickers() {
+      const type = document.getElementById('productType').value;
+      const sel = document.getElementById('stickerDesign');
+      sel.innerHTML = '';
+      if (!type) { sel.innerHTML = '<option>Select product type first...</option>'; return; }
+      sel.innerHTML = '<option value="">Select sticker...</option>';
+      stickers[type].forEach(s => { sel.innerHTML += `<option>${s}</option>`; });
+      updateSummary();
+    }
+
+    // ============================================================
+    // ORDER FORM — Auto-generate summary
+    // ============================================================
+    function updateSummary() {
+      const type    = document.getElementById('productType').value;
+      const sticker = document.getElementById('stickerDesign').value;
+      const frag    = document.getElementById('fragrance').value;
+      const qty     = document.getElementById('qty').value || 1;
+      const name    = document.getElementById('custName').value;
+      if (!type || !sticker || !frag) {
+        document.getElementById('orderSummary').textContent = 'Fill the fields above to see your order summary.';
+        return;
+      }
+      const total = prices[type] * qty;
+      document.getElementById('orderSummary').textContent =
+        `${name ? name + ' — ' : ''}${qty}x ${names[type]} [${sticker}] · ${frag} · ₹${total}`;
+    }
+    ['productType','stickerDesign','fragrance','qty','custName'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('change', updateSummary);
+      if (el) el.addEventListener('input', updateSummary);
+    });
+
+    // ============================================================
+    // WHATSAPP ORDER
+    // CHANGE THIS: Replace 91XXXXXXXXXX with your WhatsApp number
+    // Example: India +91 98765 43210 → 919876543210
+    // ============================================================
+    function openWhatsApp() {
+      const type    = document.getElementById('productType').value;
+      const sticker = document.getElementById('stickerDesign').value;
+      const frag    = document.getElementById('fragrance').value;
+      const qty     = document.getElementById('qty').value || 1;
+      const name    = document.getElementById('custName').value;
+      const msg = `Hi! I'd like to place an order:%0A%0AName: ${name}%0AProduct: ${names[type]||'?'}%0ASticker: ${sticker||'?'}%0AFragrance: ${frag||'?'}%0AQuantity: ${qty}%0A%0APlease share payment and delivery details. Thank you!`;
+      // ↓ CHANGE THIS NUMBER
+      window.open('https://wa.me/91XXXXXXXXXX?text=' + msg, '_blank');
+      return false;
+    }
+
+    // ============================================================
+    // EMAIL ORDER
+    // CHANGE THIS: Update email address if needed
+    // ============================================================
+    function openEmail() {
+      const type    = document.getElementById('productType').value;
+      const sticker = document.getElementById('stickerDesign').value;
+      const frag    = document.getElementById('fragrance').value;
+      const qty     = document.getElementById('qty').value || 1;
+      const name    = document.getElementById('custName').value;
+      const body = `Hi!\n\nOrder Details:\nName: ${name}\nProduct: ${names[type]||'?'}\nSticker: ${sticker||'?'}\nFragrance: ${frag||'?'}\nQuantity: ${qty}\n\nPlease share payment and delivery details. Thank you!`;
+      // ↓ CHANGE THIS EMAIL if needed
+      window.open(`mailto:minimiragee@gmail.com?subject=Order - On To You&body=${encodeURIComponent(body)}`);
+      return false;
+    }
+
+  </script>
+
+</body>
+</html>
